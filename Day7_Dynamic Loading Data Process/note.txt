@@ -19,3 +19,5 @@ selenium使用：
         -执行js程序： execute_script('jscode')
         -前进，后退： back(), forward()
         -关闭浏览器： quit()
+
+    -selenium 处理iframe
