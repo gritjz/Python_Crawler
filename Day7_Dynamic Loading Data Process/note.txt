@@ -21,3 +21,19 @@ selenium使用：
         -关闭浏览器： quit()
 
     -selenium 处理iframe
+        -如果定位的标签在iframe中，则必须使用switch_to.frame(id)
+        - 动作链（拖动）： from selenium.webdriver import ActionChains
+            - 实例化：action = ActionChains(bro)
+            - 长按点击操作： action.click_and_hold(div)
+            - 滑动拖动：  action.move_by_offset(17, 0)
+            - 执行动作链： .perform()
+            - 释放动作链： action.release()
+
+12306模拟登录：
+    -超级鹰：验证码识别
+        - 注册
+        - 登录
+            -题分查询：充值
+            -创建软件： 获得id key
+            -下载示例代码
+            -使用示例代码：
