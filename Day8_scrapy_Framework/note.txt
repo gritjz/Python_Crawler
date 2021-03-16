@@ -30,3 +30,22 @@ scrapy框架
         - scrapy genspider spiderName www.xxx.com
     - 执行工程：
         - scrapy crawl spiderName
+-scrapy数据分析
+
+-scrapy持久化存储
+    - 基于终端指令：
+        - 要求：只可以将parse（）方法的返回值存储到本地的文本文件中
+        - 注意： 持久化存储对应的文本文件的类型只可以为'json', 'jsonlines', 'jl', 'csv', 'xml', 'marshal', 'pickle')
+        - 指令： scrapy crawl spiderName -o filePath
+        - 好处： 简洁高效
+        - 缺点： 局限性比较强（数据只可以存储到指定后缀的文本文件中）
+    - 基于管道：
+        - 编码流程：
+            - 数据解析
+            - 在item类中定义相关的属性
+            - 将解析的数据封装存储到item类型的对象中
+                -author = scrapy.Field()
+                -content = scrapy.Field()
+            - 将item类型的对象提交到pipelines进行持久化存储的操作
+            - 在pipelines中的process_item要将接收到的item对象中存储的数据进行持久化存储
+            - 在配置文件中开启pipeline，默认不开启pipeline，需手动开启
