@@ -9,6 +9,7 @@ from itemadapter import ItemAdapter
 
 import pymysql
 
+
 class QiubaiproPipeline:
     fp = None
 
@@ -24,43 +25,45 @@ class QiubaiproPipeline:
         author = item['author']
         content = item['content']
         self.fp.write(author + ':' + content)
+        # 只要return的item都会传递给下一个即将执行的pipeline，即使只有一个pipeline,可以不写但最好写上，为之后的代码提供方便
         return item
 
     def close_spider(self, spider):
         self.fp.close()
         print('FINISH SPIDER！')
 
-#pipeline文件中, 一个类对应将一组数据存储到一个平台或者载体中
+
+# pipeline文件中, 一个类对应将一组数据存储到一个平台或者载体中
 class mysqlPipeLine(object):
     conn = None
     cursor = None
+
     def open_spider(self, spider):
+        print('START SPIDER2......')
         self.conn = pymysql.Connect(host='127.0.0.1',
                                     port=3306,
                                     user='root',
-                                    password='123456',
-                                    db='qiubai')
+                                    password='zjn19900811',
+                                    db='dbfortest',
+                                    charset='utf8')
 
     def process_item(self, item, spider):
+        sql = 'INSERT INTO ss VALUES("%s","%s")' % (item["author"], item["content"])
         self.cursor = self.conn.cursor()
         try:
-            self.cursor.execute('insert into qiubai values("%s","%s")%(item["author"],item["content"])')
+            author = item["author"]
+            content = item["content"]
+            print(author+': '+ content)
+            self.cursor.execute(sql)
+            self.conn.commit()
         except Exception as e:
             print(e)
             self.conn.rollback()
+        return item
 
+    def close_spider(self, spider):
+        self.cursor.close()
+        self.conn.close()
+        print('FINISH SPIDER2！')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 爬虫文件提交的item类型的对象最终先会提交给 优先级较高的pipeline

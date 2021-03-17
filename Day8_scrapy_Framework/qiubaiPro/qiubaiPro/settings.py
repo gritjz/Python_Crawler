@@ -65,6 +65,7 @@ LOG_LEVEL = 'ERROR'
 # 300 represents priority, smaller means higher priority
 ITEM_PIPELINES = {
     'qiubaiPro.pipelines.QiubaiproPipeline': 300,
+    'qiubaiPro.pipelines.mysqlPipeLine': 301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
