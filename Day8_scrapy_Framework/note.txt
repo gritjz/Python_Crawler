@@ -49,3 +49,8 @@ scrapy框架
             - 将item类型的对象提交到pipelines进行持久化存储的操作
             - 在pipelines中的process_item要将接收到的item对象中存储的数据进行持久化存储
             - 在配置文件中开启pipeline，默认不开启pipeline，需手动开启
+        -好处:
+            - 通用性强
+        -缺点:
+            - 编码稍显繁琐
+    - 面试题: 将爬取到的数据,一份存本地,一份存数据库
