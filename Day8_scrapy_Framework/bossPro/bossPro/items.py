@@ -9,4 +9,5 @@ import scrapy
 class BossproItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    job_name = scrapy.Field()
+    job_desc = scrapy.Field()
