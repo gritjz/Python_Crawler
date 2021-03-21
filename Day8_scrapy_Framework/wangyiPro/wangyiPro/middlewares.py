@@ -7,6 +7,8 @@ from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
+from scrapy.http import HtmlResponse
+from time import sleep
 
 
 class WangyiproSpiderMiddleware:
@@ -80,14 +82,35 @@ class WangyiproDownloaderMiddleware:
         #   installed downloader middleware will be called
         return None
 
-    def process_response(self, request, response, spider):
-        # Called with the response returned from the downloader.
+    # 该方法拦截五大板块对应的响应对象，进行篡改
+    def process_response(self, request, response, spider):  # spider是爬虫对象
+        # 挑选指定的响应对象进行篡改
+        # 通过url 指定request
+        # 通过request指定response
 
-        # Must either;
-        # - return a Response object
-        # - return a Request object
-        # - or raise IgnoreRequest
-        return response
+        bro = spider.bro  # 获取了爬虫类中定音的浏览器对象
+
+        if request.url in spider.models_urls:
+            bro.get(response.url)
+            sleep(3)
+            page_text = bro.page_source   #包含了动态加载的新闻数据
+
+
+
+
+            # response#五大板块对应的响应对象
+            # 针对定位到的这些response进行篡改
+            # 实例化一个新的响应对象（符合需求：包含动态加载出的新闻数据），替代原来旧的响应对象
+            # 如何获取动态加载到的新闻数据？
+            # 基于selenium获取动态数据
+            new_response = HtmlResponse(url=request.url,
+                                        body=page_text,
+                                        encoding='utf-8',
+                                        request=request)
+            return new_response
+        else:
+            # response#其他请求对应的响应对象
+            return response
 
     def process_exception(self, request, exception, spider):
         # Called when a download handler or a process_request()
