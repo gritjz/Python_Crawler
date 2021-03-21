@@ -6,7 +6,9 @@ class BossSpider(scrapy.Spider):
     name = 'boss'
     # allowed_domains = ['www.xxx.com']
     start_urls = [
-        'https://www.zhipin.com/job_detail/?query=python']
+        'https://www.zhipin.com/job_detail/?query=python&city=100010000&industry=&position=']
+    url = 'https://www.zhipin.com/c100010000/?query=python&page=%d'
+    page_num = 2
 
     # 回调函数
     def parse_detail(self, response):
@@ -18,6 +20,7 @@ class BossSpider(scrapy.Spider):
 
         yield item
 
+    # 解析岗位名称
     def parse(self, response):
         count = 0
         li_list = response.xpath('//div[@class="job-list"]/ul/li')
@@ -35,3 +38,9 @@ class BossSpider(scrapy.Spider):
             # 手动请求的发送
             # 请求传参，meta={}, 可以将meta字典传递给请求对应的回调函数
             yield scrapy.Request(detail_url, callback=self.parse_detail, meta={'item: ': item})
+        # 分页操作
+        if self.page_num <= 3:
+            new_url = format(self.url % self.page_num)
+            self.page_num += 1
+
+            yield scrapy.Request(new_url, callback=self.parse)
