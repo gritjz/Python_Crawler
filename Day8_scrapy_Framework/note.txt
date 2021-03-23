@@ -116,3 +116,15 @@ scrapy框架
 
     - 爬虫中间件：引擎和spider之间的控件
 
+- CrawSpider：基于Spider的一个子类
+    - 专门全站数据爬取的方式
+        - 基于Spider：手动请求发送
+        - 基于CrawlSpider
+    - CrawlSpider的使用：
+        - 创建工程：
+        - cd xxx
+        - 创建爬虫文件（CrawlSpider）：
+            - scrapy genspider -t crawl xxx www.xx.com
+            - 链接提取器：
+                - 从start_url中根据指定规则进行指定文件的提取
+
