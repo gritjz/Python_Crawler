@@ -141,4 +141,40 @@ scrapy框架
     -如何时间分布式？
         - 安装scrapy-redis
         - 原生的scrapy是不能实现分布式的， 必须用redis组件实现分布式爬虫
-        -
+            - 调度器不能被分布式机群共享
+            - 管道不可以被分布式机群共享
+        - scrapy-redis作用：
+            - 可以给原生的scrapy框架提供可以被共享的管道和调度器
+        - 实现流程
+            - 创建一个工程：
+            - 创建基于CrawlSpider的爬虫文件
+            - 修改爬虫文件：
+                - 导包：from scrapy_redis.spiders import RedisCrawlSpider
+                - 将start_url和allowed_domains注释
+                - 添加新属性， redis_key='redis'， 可以被共享的调度器队列的名称
+                - 数据解析
+                - 将当前爬虫类的父类修改成RedisCrawlSpider
+                - 修改settings.py，
+                    - 指定可以被共享的管道
+                        -ITEM_PIPELINES = {'scrapy_redis.pipelines.RedisPipeLIne': 400}
+                    - 指定调度器
+                        - # 去重类--指定哪个去重方法给request对象去重
+                            DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+                          # 队列--指定scheduler队列，调度器内存的是待爬取链接和已爬取对象指纹。
+                            SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+                          # 队列内容是否持久化保存--True时，会继续之前未完成的任务继续爬取。为False的时候，关闭redis的时候清空redis
+                            SCHEDULER_PERSIST = True
+                    - 指定redis服务器
+                        -REDIS_HOST = ''
+                        REDIS_PORT =6379
+                - redis相关配置：
+                    - 配置redis的配置文件：redis.conf
+                        -将"bind 127.0.0.0”注释
+                        -关闭保护模式： “protected-mode yes” to “protected-mode no”
+                    - 结合配置文件开启redis服务
+                        -redis-server.exe redis.windows.conf
+                - 执行工程：
+                    - scrapy runspider xxx.py
+                - 调度器的队列再redis的客户端中
+                    - lpush xxx www.xxx.com
+                -爬取到的数据存储再redis的proName：items这个数据结构中
