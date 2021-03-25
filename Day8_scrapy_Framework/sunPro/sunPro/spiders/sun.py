@@ -6,7 +6,7 @@ from scrapy.spiders import CrawlSpider, Rule
 class SunSpider(CrawlSpider):
     name = 'sun'
     # allowed_domains = ['www.xx.com']
-    start_urls = ['https://www.zhipin.com/c100010000/?query=python&page=1&ka=page-1']
+    start_urls = ['http://news.sun0769.com/head/default_1.shtml']
 
     # 链接提取器：从start_url中根据指定规则进行指定文件的提取
     link = LinkExtractor(allow=r'page=\d+&ka=page-\d+')
@@ -18,7 +18,7 @@ class SunSpider(CrawlSpider):
 
 
     )
-
+    #解析新闻标号和标题
     def parse_item(self, response):
         #item = {}
         #item['domain_id'] = response.xpath('//input[@id="sid"]/@value').get()
